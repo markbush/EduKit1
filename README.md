@@ -59,3 +59,6 @@ If you get a `VERIFY ERROR`, this might be because the program already exists on
 
 	SAVE "@:1 HELLO WORLD",8
 
+## Worksheets
+
+[CamJam EduKit1 on BMC64](https://github.com/markbush/EduKit1/blob/master/EduKit1.pdf)
