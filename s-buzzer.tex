@@ -1,0 +1,177 @@
+\section{Buzzer}\label{s:buzzer}
+
+\project{Morse code SOS using a Buzzer}{In this project, you will learn how to wire and program a buzzer, and use it to produce Morse code.
+
+You will be using `subroutines'.
+}
+
+\subsection*{Equipment Required}
+
+The cuircuit built in Sectino~\ref{s:button}, plus the following:
+\begin{itemize}
+\item Buzzer
+\item 1 x M/F jumper wire
+\item 1 x M/M jumper wire
+\end{itemize}
+
+\subsection*{Additional Parts}
+
+You will be adding a buzzer to the LED and switch circuit that you made in Section~\ref{s:button}.  Let us look at the additional component.
+
+Do not skip this section, as you will need to know how to connect the buzzer.
+
+\subsubsection*{Buzzer}
+
+\limage{0.15}{buzzer}
+
+The buzzer supplied in the EduKit is an `active' buzzer, which means that it only needs an electric current to make a noise.  In this case, you are using the Raspberry Pi to supply that current.
+
+The buzzer has positive and negative legs.  The longer leg is positive (shown in red in the diagram), the shorter leg is negative (shown in black on the diagram).
+
+~\hfill
+\vspace{5ex}
+~\hfill
+\newpage
+
+\subsection*{Building the Circuit}
+
+\limage{0.5}{buzzer-circuit}
+
+Before you connect additional components to your circuit, you should turn off your Pi.
+
+Leave the LED and switch circuit from Section~\ref{s:button} in place.
+
+Place the buzzer on the breadboard straddling the middle divide.  The longer leg should be connected via a jumper wire to GPIO 16.
+
+The other leg should be connected to the ground rail.
+
+GPIO 16 will be an output pin and, when it is set on, the buzzer will sound.
+
+Remember that we will need to ensure that this pin can be used as an output.  This pin is bit 4 in the user port and has a value of 16.  You will need to set this bit in the DDR to 1 to allow output.
+
+~\hfill
+
+~\hfill
+
+~\hfill
+
+~\hfill
+
+~\hfill
+
+~\hfill
+
+~\hfill
+
+~\hfill
+
+~\hfill
+
+\subsection*{Concepts}
+
+You are going to be using `subroutines' in the code below.  These are pieces of code that you may want to run more than once, but by using subroutines, you only have to write them once.  You then `call' that subroutine from within your code each time you want to run it.
+
+A subroutine is any section of code which ends with a `RETURN' statement:
+\begin{basic}
+200 PRINT "HELLO WORLD!"
+210 RETURN
+\end{basic}
+
+To use this subroutine, you must `call' it by using a `GOSUB' statement with the line number that starts the subroutine:
+\begin{basic}
+50 GOSUB 200
+\end{basic}
+
+Now, every time BASIC sees `GOSUB 200' in your code, it will print ``HELLO WORLD!''.
+
+\subsection*{Code}
+
+Type in the following code below exactly as seen:
+\begin{basic}
+10 REM LED
+20 REM SETUP LOCATIONS
+30 UP=56577:DDR=56579
+40 REM PIN VALUES FOR BUZZER
+50 Z=16
+60 REM SET BUZZER PIN FOR OUTPUT
+70 POKE DDR,Z
+80 REM CLEAR USER PORT (ALL PINS OFF)
+90 POKE UP,0
+100 PRINT CHR\$(147);:REM CLEARS THE SCREEN
+110 PRINT "MORSE CODE"
+120 REM PROMPT THE USER FOR INPUT
+130 INPUT "HOW MANY TIMES FOR SOS TO LOOP";C
+140 FOR L=1 TO C
+150 GOSUB 1500:REM S
+160 GOSUB 1300:REM LETTER SPACE
+170 GOSUB 1600:REM O
+180 GOSUB 1300:REM LETTER SPACE
+190 GOSUB 1500:REM S
+200 GOSUB 1400:REM WORD SPACE
+210 NEXT L
+220 END
+1000 REM A DELAY OF D TENTHS OF A SECOND
+1010 T=D*72
+1020 FOR I=1 TO T:NEXT I
+1030 RETURN
+1100 REM A SINGLE MORSE DOT
+1110 POKE UP,Z
+1120 D=1:GOSUB 1000
+1130 POKE UP,0
+1140 D=1:GOSUB 1000
+1150 RETURN
+1200 REM A SINGLE MORSE DASH
+1210 POKE UP,Z
+1220 D=3:GOSUB 1000
+1230 POKE UP,0
+1240 D=1:GOSUB 1000
+1250 RETURN
+1300 REM THE SPACE BETWEEN LETTERS
+1310 D=2:GOSUB 1000
+1320 RETURN
+1400 REM THE SPACE BETWEEN WORDS
+1410 D=6:GOSUB 1000
+1420 RETURN
+1500 REM THE MORSE FOR S
+1510 GOSUB 1100:REM DOT
+1520 GOSUB 1100:REM DOT
+1530 GOSUB 1100:REM DOT
+1540 RETURN
+1600 REM THE MORSE FOR O
+1610 GOSUB 1200:REM DASH
+1620 GOSUB 1200:REM DASH
+1630 GOSUB 1200:REM DASH
+1640 RETURN
+\end{basic}
+
+Save the program as ``6 MORSE CODE''.
+
+\subsection*{Running the Code}
+
+Run the program.  You will be prompted for the number of times you want to repeat `SOS'.
+
+\subsection*{Challenge}
+
+Using the above code as your template, write another program that will allow you to sound any Morse code you choose.  Use the following rules:
+\begin{itemize}
+\item The length of a dot is one unit.
+\item The length of a dash is three units.
+\item The space between the parts of each letter is one unit.
+\item The space between letters is three units.
+\item The space between words is seven units.
+\item The letter and number codes are:
+\end{itemize}
+\begin{center}
+\begin{tabular}{llllllllllll}
+A & \ds\dl & G & \dl\dl\ds & M & \dl\dl & S & \ds\ds\ds & Y & \dl\ds\dl\dl & 4 & \ds\ds\ds\ds\dl \\
+B & \dl\ds\ds\ds & H & \ds\ds\ds\ds & N & \dl\ds & T & \dl & Z & \dl\dl\ds\ds & 5 & \ds\ds\ds\ds\ds \\
+C & \dl\ds\dl\ds & I & \ds\ds & O & \dl\dl\dl & U & \ds\ds\dl & 0 & \dl\dl\dl\dl\dl & 6 & \dl\ds\ds\ds\ds \\
+D & \dl\ds\ds & J & \ds\dl\dl\dl & P & \ds\dl\dl\ds & V & \ds\ds\ds\dl & 1 & \ds\dl\dl\dl\dl & 7 & \dl\dl\ds\ds\ds \\
+E & \ds & K & \dl\ds\dl & Q & \dl\dl\ds\dl & W & \ds\dl\dl & 2 & \ds\ds\dl\dl\dl & 8 & \dl\dl\dl\ds\ds \\
+F & \ds\ds\dl\ds & L & \ds\dl\ds\ds & R & \ds\dl\ds & X & \dl\ds\ds\dl & 3 & \ds\ds\ds\dl\dl & 9 & \dl\dl\dl\dl\ds
+\end{tabular}
+\end{center}
+
+\subsection*{Advanced Challenge}
+
+Using what you have learned so far, especially from Section~\ref{s:button}, make your own Morse code machine by making the buzzer sound when you press the button.

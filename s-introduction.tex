@@ -1,0 +1,132 @@
+\section{Introduction}\label{s:intro}
+
+\project{Setting up your Raspberry Pi.}{Set up your Raspberry Pi and run your first BASIC program to print ``Hello World'' to the screen.  You will not be connecting any of the contents of the CamJam EduKit to the Raspberry Pi for this short exercise.}
+
+\subsection*{Notes and Assumptions}
+
+During these experiments, we will be using the Raspberry Pi GPIO pins as both inputs and outputs.  It is very important that you do not have any other equipment connected to the GPIO pins as this could result in unexpected behaviour.  In the worst case, it could damage your Raspberry Pi!
+
+We will be using the BMC64 emulator of the Commodore 64.  This is a `bare metal' application, which means that it runs on the Raspberry Pi as a single application whithout any operating system.
+
+The Commodore 64 had a special port to allow people to connect electronics called the \textbf{User Port} and this has been made available in BMC64.  It connects to some of the GPIO pins.  The user port is only available for Raspberry Pis with 40 GPIO pins, however it is not currently available on the Raspberry Pi 4.
+
+\subsection*{Equipment Required}
+
+\begin{itemize}
+\item A Raspberry Pi (model 3 B+ recommended).
+\item An SD card with BMC64 installed.  Instructions for setting up BMC64 can be found on the \href{https://accentual.com/bmc64/}{BMC64 website}.
+\item Monitor and cable to connect to the HDMI output of your Pi.
+\item A keyboard.
+\item A Raspberry Pi power supply.
+\item The EduKit 1 kit, available from \href{https://thepihut.com/edukit}{The Pi Hut}.
+\end{itemize}
+
+\subsection*{Setting Up Your Raspberry Pi}
+
+\rimage{0.35}{pi-setup}
+
+Find your Raspberry Pi.
+\begin{itemize}
+\item Plug in the micro SD card.
+\item Plug the HDMI/video cable into the Raspberry Pi and the monitor.
+\item Plug the keyboard into a USB port.
+\item Ensure nothing is connected to any GPIO pins!
+\item Plug in the power supply.
+\end{itemize}
+
+When everything is connected, it should look like this.  It is a good idea to ensure you are always using the latest version of BMC64.  This will mostly just require copying kernel images from the distribution ZIP file onto your card.  Sometimes, other configuration files are updated.  If you have edited them, check what is new and just copy those parts into your edited version.
+
+Once you have supplied power to your Pi, you should see the normal C64 startup screen as shown:
+\begin{code}
+
+    **** COMMODORE 64 BASIC V2 ****
+
+ 64K RAM SYSTEM  38911 BASIC BYTES FREE
+
+READY.
+\pet{160}
+\end{code}
+
+Go into the settings menu (`F12'), select the ``Prefs'' option, then the GPIO option.  Use the right and left cursor keys to select option 4 (``Userport and Joys'').  This is required to activate the connection between the BMC64 user port and the Raspberry Pi GPIO pins.
+
+\subsection*{How to Type In Code}
+
+Program listings will be shown in one of two possible ways.  Both will use the same font that BMC64 uses.  One will show exactly how something will appear on the screen, like this:
+\begin{code}
+PRINT "\pet{211}HELLO, WORLD"
+\end{code}
+
+This will let you see if what you have typed is exactly what it should be.  This form of listing doesn't make it very easy to know what to type to get the special characters or how many spaces there might be in a particular string.  For example, in the above line of code, it is not obvious that you need to press the `CLR' key (usually SHIFT+`Home' on a USB keyboard) to get the reverse video heart symbol or why it is there at all.
+
+To help with typing in special symbols, most listings will use descriptions for special keys, as shown here:
+\begin{basic}
+PRINT "\{CLR\}HELLO, WORLD"
+\end{basic}
+
+When you need to press a special key, the name of the key will be shown in curly brackets, as above.  Some of the special keys just require you to press the relevant key on your keyboard (such as the space bar for SPC, the `Home' and `Delete' keys for HOME and DEL, etc.).  Some will require you to hold down another key at the same time (for example, CLR is usually typed by holding SHIFT and hitting the `Home' key, F1--F8 are typed as they are on some keyboards and sometimes require that you hold down the `function' key at the same time).  The colour keys are obtained by holding down either the `CTRL' key or the `Commodore' key (usually the `windows' key marked `\winkey' or `cmd' key marked `\cmdkey' on a USB keyboard).  Table~\ref{tbl:specials} shows how to obtain each of the special characters.  When you enter them in strings, they will appear as the characters in the `Show' column.
+
+Many of the keys on your keyboard will produce graphics characters when pressed while holding either SHIFT or Commodore keys.  To indicate this, you'll see an underline when you need the shifted version (like `\underline{N}') and double angle brackets when you need to use the Commodore key (like `<<N>>').  When you need to enter more than one of the same character in a row, you'll see this in curly brackets with the number of times you need to enter the character.  If a program line uses two screen lines, just keep typing---don't press RETURN in the middle.  For example, a listing might be given as follows:
+\begin{basic}
+10 PRINT"\{CLR\}\{ORG\}\{4 *\} THE CARD SUITS ARE:
+   \underline{ASZX}"
+\end{basic}
+
+However it will appear on your screen as:
+\begin{code}
+10 PRINT"\pet{211}\pet{193}**** THE CARD SUITS ARE: \pet{65}\pet{83}\pet{90}\pet{88}
+"
+\end{code}
+
+\subsection*{Writing Code}
+
+You are now going to create your first small piece of BASIC code that will simply print ``HELLO WORLD'' to the screen.  Type in the code exactly as shown:
+\begin{basic}
+10 REM PRINT HELLO WORLD!
+20 PRINT "HELLO WORLD!"
+\end{basic}
+
+Everything on the same line after `REM' is a comment and will be ignored by BASIC.
+
+Save the program as ``1 HELLO WORLD''.
+
+\subsection*{Running the Code}
+
+To run your code, type `RUN' and hit the `ENTER' or `RETURN' key.  You will see ``HELLO WORLD!'' printed on the screen:
+\begin{code}
+10 REM PRINT HELLO WORLD!
+20 PRINT "HELLO WORLD!"
+RUN
+HELLO WORLD!
+
+READY
+\pet{160}
+\end{code}
+
+\begin{table}[htbp]
+\caption{How to produce all the `special' characters.}\label{tbl:specials}
+\begin{center}
+\begin{tabular}{|l|l|l|c||l|l|l|c|}
+\hline
+Ref       & Meaning          & Type                & Show                      & Ref     & Meaning          & Type           & Show \\ \hline
+BLK      & Black               & CTRL-1           & \cbox{\pet{208}}      & ORG   & Orange            & \winkey-1   & \cbox{\pet{193}} \\
+WHT     & White               & CTRL-2           & \cbox{\pet{133}}     & BRN    & Brown             & \winkey-2   & \cbox{\pet{213}} \\
+RED      & Red                 & CTRL-3           & \cbox{\pet{156}}     & LRD     & Light red         & \winkey-3   & \cbox{\pet{214}} \\
+CYN      & Cyan                & CTRL-4           & \cbox{\pet{223}}     & DGY    & Dark grey        & \winkey-4   & \cbox{\pet{215}} \\
+PUR      & Purple              & CTRL-5           & \cbox{\pet{220}}     & MGY    & Medium grey  & \winkey-5   & \cbox{\pet{216}} \\
+GRN      & Green              & CTRL-6           & \cbox{\pet{158}}     & LGN     & Light green     & \winkey-6   & \cbox{\pet{217}} \\
+BLU       & Blue                 & CTRL-7           & \cbox{\pet{159}}     & LBL      & Light blue       & \winkey-7  & \cbox{\pet{218}} \\
+YEL        & Yellow             & CTRL-8            & \cbox{\pet{222}}     & LGY     & Light grey       & \winkey-8  & \cbox{\pet{219}} \\
+RIGHT   & Cursor right     & Cursor right      & \cbox{\pet{157}}    & F1        & Fn key 1         & F1              & \cbox{\pet{197}} \\
+LEFT      & Cursor left       & Cursor left        & \cbox{\pet{221}}    & F2        & Fn key 2         & F2              & \cbox{\pet{201}} \\
+DOWN   & Cursor down    & Cursor down    & \cbox{\pet{145}}    & F3        & Fn key 3         & F3              & \cbox{\pet{198}} \\
+UP         & Cursor up         & Cursor up         & \cbox{\pet{209}}    & F4        & Fn key 4         & F4              & \cbox{\pet{202}} \\
+RVS       & Reverse video & CTRL-9            & \cbox{\pet{146}}    & F5        & Fn key 5         & F5              & \cbox{\pet{199}} \\
+OFF       & Normal video   & CTRL-0            & \cbox{\pet{210}}    & F6        & Fn key 6         & F6              & \cbox{\pet{203}} \\
+HOME    & Go to top left   & Home               & \cbox{\pet{147}}    & F7        & Fn key 7         & F7              & \cbox{\pet{200}} \\
+CLR       & Clear screen   & SHIFT-Home    & \cbox{\pet{211}}     & F8        & Fn key 8         & F8              & \cbox{\pet{204}} \\
+DEL       & Delete              & Delete              & \cbox{\pet{148}}    & SPC      & Space            & Space        & \\
+INST      & Insert               & SHIFT-Delete   & \cbox{\pet{212}}    &              &                       &                    & \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}

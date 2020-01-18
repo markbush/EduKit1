@@ -1,0 +1,127 @@
+\usepackage[nomarginpar,margin=1in,top=1in,bottom=1in]{geometry}
+\usepackage{graphicx}
+\graphicspath{{images/}}
+\usepackage{wrapfig}
+\usepackage{fontspec}
+\setmonofont{C64 Pro Mono}
+\newcommand\winkey{{\fontspec{Illustrate IT}c}}
+\newcommand\cmdkey{{\fontspec{Lucida Grande}\char"2318}}
+\usepackage{color}
+\definecolor{lightgrey}{gray}{0.9}
+\definecolor{midgrey}{gray}{0.7}
+\definecolor{darkgrey}{gray}{0.4}
+\definecolor{orange}{rgb}{1,0.4,0.1}
+\definecolor{darkpurple}{rgb}{0.2,0.15,0.47}
+\definecolor{lightpurple}{rgb}{0.42,0.36,0.7}
+\usepackage{mdframed}
+\newmdenv[topline=false,rightline=false,bottomline=false,linecolor=red,linewidth=2pt]{quoted}
+\usepackage{longtable}
+\usepackage{enumitem}
+\setlist{noitemsep}
+\usepackage{caption}
+\usepackage{array}
+
+\makeatletter
+\newenvironment{code}{%
+\setlength{\parindent}{0pt}%
+  \@tempswafalse
+  \def\par{%
+    \if@tempswa
+      \leavevmode \null \@@par\penalty\interlinepenalty
+    \else
+      \@tempswatrue
+      \ifhmode\@@par\penalty\interlinepenalty\fi
+    \fi\vspace*{-2pt}}%
+\ttfamily\obeylines\frenchspacing\@vobeyspaces%
+%\small%
+}{}
+\newenvironment{basic}{%
+\setlength{\parindent}{0pt}%
+  \@tempswafalse
+  \def\par{%
+    \if@tempswa
+      \leavevmode \null \@@par\penalty\interlinepenalty
+    \else
+      \@tempswatrue
+      \ifhmode\@@par\penalty\interlinepenalty\fi
+    \fi%\vspace*{-2pt}
+  }%
+\ttfamily\obeylines\frenchspacing\@vobeyspaces%
+\footnotesize%
+}{}
+\makeatother
+\surroundwithmdframed[linewidth=7pt,backgroundcolor=darkpurple,fontcolor=lightpurple,linecolor=lightpurple,innertopmargin=5pt,innerleftmargin=1pt,innerrightmargin=0pt,innerbottommargin=5pt,rightmargin=0pt]{code}
+\surroundwithmdframed{basic}
+\newenvironment{screencode}[2]{%
+\begin{figure}[htbp]
+\caption{#1}
+\label{#2}
+\begin{code}
+}{%
+\end{code}
+\end{figure}
+}
+\newenvironment{typecode}[2]{%
+\begin{figure}[htbp]
+\caption{#1}
+\label{#2}
+\begin{basic}
+}{%
+\end{basic}
+\end{figure}
+}
+\newmdenv[outerlinewidth=0,linecolor=red,roundcorner=5pt]{mdnote}
+\newcommand{\note}[1]{%
+\begin{mdnote}
+\textbf{\Large{}Note}\\
+#1
+\end{mdnote}
+}
+
+\usepackage{forloop}
+\input{petscii}
+\input{keywords}
+\input{codes}
+\setlength{\fboxsep}{0pt}
+\newcommand\cbox[1]{\framebox[1.05em]{\rule{0pt}{.8em}\hspace*{.03em}#1}}
+
+\newcommand\project[2]{%
+\begin{tabular}{p{0.15\textwidth}p{0.8\textwidth}}
+\textbf{Project} & #1 \\
+\textbf{Description} & #2 \\
+\end{tabular}
+}
+\newcommand\limage[2]{%
+\begin{wrapfigure}{L}{#1\textwidth}
+\centering
+\includegraphics[width=#1\textwidth]{#2}
+\end{wrapfigure}
+}
+\newcommand\rimage[2]{%
+\begin{wrapfigure}{R}{#1\textwidth}
+\centering
+\includegraphics[width=#1\textwidth]{#2}
+\end{wrapfigure}
+}
+\newcommand\explain[1]{%
+\hfill\begin{minipage}[t]{0.9\textwidth}%
+#1
+\end{minipage}
+}
+\newcommand\ds{$\bullet$~}
+\newcommand\dl{$\mathbf{-}$~}
+
+\usepackage{hyperref}
+\hypersetup{
+  colorlinks=true,
+  pdfinfo={
+    Title={CamJam EduKit 1 on BMC64},
+    Author={Mark Bush}
+  }
+}
+
+\setcounter{tocdepth}{1}
+
+\title{CamJam EduKit 1 on BMC64}
+\author{Mark Bush}
+\date{}

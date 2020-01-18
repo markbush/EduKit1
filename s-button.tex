@@ -1,0 +1,146 @@
+\section{Button}\label{s:button}
+
+\project{Push button for physical input}{In this project, you will learn how to wire and program a push button for physical input.}
+
+\subsection*{Equipment Required}
+
+The circuit build in Section~\ref{s:leds} plus the following:
+\begin{itemize}
+\item push button
+\item 1 x M/F jumper wire
+\item 1 x M/M jumper wire
+\end{itemize}
+
+\subsection*{Additional Parts}
+
+You will be adding a switch to the LED circuit that you made in Section~\ref{s:leds}.  Here are the additional components.  You may skip this section if you already know about these components.
+
+\subsubsection*{Push Button}
+
+\rimage{0.1}{switch}
+
+A push button will complete a circuit when the button is pressed.  What this means is that a current will not flow across the button until it is pressed.  When it is released, the circuit will be `broken'.
+
+Normally, if you try to detect the state of an input pin when there is no current, it will randomly be either on or off due to interference of other components.  BMC64 solves this by internally `pulling up' the input to 3.3 volts through a large resistor.  When read, the input pin will be seen as `on'.  The resistor ensures that the current is very low so that your Pi is not damaged!
+
+BMC64 handles this automatically for you whenever a pin is specified as an input.  This means your circuit usually only needs to be connected to ground.  Input pins are `pulled high' internally when there is no external connection and outputs are set high internally when you set the user port to 1.
+
+This is also why your LEDs may be on when you first connect them.  The user port is in input mode and the pins are `high' when the computer is turned on.  They will only glow faintly because of the large resistor.  This is not a problem.  This is also why the programs in these worksheets start by turning all the pins off in the user port, once the output pins have been specified in the data direction register.
+
+When you press the switch, another circuit is made which will make the current `flow to ground', which means that the input pin will be seen as being `off'.  This is how you will detect the switch.
+
+\subsubsection*{Jumpers}
+
+\limage{0.2}{more-jumpers}
+
+You will be adding one more Male/Female jumper wire and one Male/Male (M/M) jumper, which has a pin on each end.  The M/M jumper will be used for joining two rows or columns on the breadboard together.
+
+The jumper wires supplied in the EduKit will vary in colour and are unlikely to match the colours used in the diagrams.
+
+\subsection*{Building the Circuit}
+
+Before you connect additional components to your circuit, you should turn off your Pi.  Leave the LED circuit from the previous worksheets in place.
+
+Add the button to the breadboard with the pins straddling the split in the middle of the board.  It will only fit one way round.  Push down hard to ensure that the pins are inserted fully into the breadboard.
+
+\limage{0.5}{switch-circuit}
+
+Connect one of the jumpers (shown in white here) from one side of the button to the input pin you are going to use on the Raspberry Pi.  You are using pin 8.
+
+Remember that GPIO 8 is bit 3 of the user port and has a value of 8.  We will need this value later to be able to read the input state of the switch.
+
+Finally, connect the `ground rail' to the other side of the switch, shown here by the purple wire.
+
+So, how does the switch work?  When the switch is not being pressed, the pin will be internally `pulled high' to 3.3v and read as `on'.
+
+When the switch is pressed, the current takes another route.  It goes through the switch and back to ground (0v).  This splits enough of the current off that the voltage across the white wire is much lower and no longer high enough for the input GPIO pin to be seen as `on'.
+
+To be able to tell when the button has been pressed, we need to be able to isolate the bit of the user port we are interested in.  This is because when we read the user port, we will read back any output bits that are set (if we have turned any LEDs on) and we will also read 1 for each input bit that is not grounded.
+
+We can use the AND operator to isolate an individual bit from a value.  If we take the user port value and AND with the bit value we are interested in, then we will extract just that bit.  The result will be 0 if there is no input (the pin is low, which means the button is pressed) or the bit value if the pin is high (which means the button is not pressed).
+
+\subsection*{Code}
+
+Type in the following code:
+\begin{basic}
+10 REM LED
+20 REM SETUP LOCATIONS
+30 UP=56577:DDR=56579
+40 REM PIN VALUES FOR LEDS AND BUTTON
+50 R=1:Y=2:G=4:B=8:A=R+Y+G
+60 REM SET ONLY PINS 0,1,2 FOR OUTPUT
+70 POKE DDR,A
+80 REM CLEAR USER PORT (ALL PINS OFF)
+90 POKE UP,0
+100 PRINT "-------------"
+110 PRINT "BUTTON + GPIO"
+120 PRINT "-------------"
+130 P=PEEK(UP) AND B:REM ONLY GET BUTTON VALUE
+140 REM IF BUTTON IS PRESSED THEN P WILL BE 0
+150 IF P=0 THEN GOSUB 200
+160 IF P<>0 THEN GOSUB 300
+170 GOTO 130
+200 PRINT "BUTTON PRESSED"
+210 PRINT P
+220 FOR D=1 TO 720:NEXT D:REM SLEEP 1 SECOND
+230 RETURN
+300 PRINT CHR\$(147);:REM CLEAR THE SCREEN
+310 PRINT "WAITING FOR YOU TO PRESS THE BUTTON"
+320 FOR D=1 TO 360:NEXT D:REM SLEEP 0.5 SECONDS
+330 RETURN
+\end{basic}
+
+Save the program as ``5 BLINK''.
+
+\subsection*{Concepts}
+
+What is happening in the code?  Let us go through some of the important concepts before looking at the code:
+\begin{itemize}
+\item A `variable' is a name that contains a value.  That value can be changed within your code at any time.  It is often easier to use a variable to contain a number because it is easier to remember the name.
+\item A ``GOSUB'' statement tells BASIC to go and run some code from somewhere else until a ``RETURN'' statement is reached.  When execution reaches ``RETURN'', BASIC will go back to the statement after the original ``GOSUB''.
+\end{itemize}
+
+\subsection*{Explanation of the Code}
+
+\begin{basic}
+10 REM LED
+20 REM SETUP LOCATIONS
+30 UP=56577:DDR=56579
+40 REM PIN VALUES FOR LEDS AND BUTTON
+50 R=1:Y=2:G=4:B=8:A=R+Y+G
+60 REM SET ONLY PINS 0,1,2 FOR OUTPUT
+70 POKE DDR,A
+80 REM CLEAR USER PORT (ALL PINS OFF)
+90 POKE UP,0
+\end{basic}
+
+\explain{This is the same setup code we have used before except we have set a `variable' B to hold the value of the pin that we are using for input from the button.}
+
+\begin{basic}
+130 P=PEEK(UP) AND B:REM ONLY GET BUTTON VALUE
+140 REM IF BUTTON IS PRESSED THEN P WILL BE 0
+\end{basic}
+
+\explain{`PEEK' will read the value of the entire user port.  Using AND, we can pick out just the bit representing the button input.  When the pin detects a voltage nearing 3.3v, it is read as `on' and this bit will be 1.  Since this bit has a `value' of 8, the result will be 8.  If the voltage nears 0v, then it is `off' and the result will be 0.}
+
+\begin{basic}
+150 IF P=0 THEN GOSUB 200
+\end{basic}
+
+\explain{The `IF' statement checks the value of the pin to see if it is 0 (so the button is being pressed).  If so, then the code in lines 200 to 230 will execute.}
+
+\begin{basic}
+160 IF P<>0 THEN GOSUB 300
+\end{basic}
+
+\explain{This `IF' statement checks the value of the pin to see if it is \textbf{not} 0 (so the button is not being pressed).  If so, then the code in lines 300 to 330 will execute.}
+
+\begin{basic}
+170 GOTO 130
+\end{basic}
+
+\explain{Once the status of the button has been printed, we go back and repeat the process again.  This `loop' will run forever, or until `RUN/STOP' is pressed.}
+
+\subsection*{Running the Code}
+
+Run the code.  The program will wait for the button to be pressed and report the status to the screen.  This will continue until you press `RUN/STOP'.

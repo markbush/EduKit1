@@ -1,0 +1,218 @@
+\section{LEDs}\label{s:leds}
+
+\project{Controlling LEDs with BASIC}{In this project, you will learn how to connect and control LEDs (Light Emitting Diode) with the Raspberry Pi.}
+
+\subsection*{Equipment Required}
+
+You will need:
+\begin{itemize}
+\item Your Raspberry Pi
+\item 400 Point Breadboard
+\item 1 x Red LED
+\item 1 x Yellow LED
+\item 1 x Green LED
+\item 3 x 330$\Omega$ Resistors
+\item 4 x M/F jumper wires
+\end{itemize}
+
+\subsection*{The Parts}
+
+In this first circuit, you will be connecting three LEDs to the GPIO header of your Raspberry Pi and using BASIC to turn the LEDs on and off.
+
+\textbf{It is important that you read this section, as you need to understand the Raspberry Pi GPIO pins, how the holes in the breadboard are connected together, and which leg of the LED is which.}
+
+Before you build the circuit, let us look at the parts you are going to use.
+
+\subsubsection*{Raspberry Pi GPIO Pins}
+
+\limage{0.2}{gpio-pins}
+
+First, lets look at the Raspberry Pi's `\textbf{GPIO}' pins.  GPIO stands for \textbf{General Putpose Input Output}.  It is a way the Raspberry Pi can control and monitor the outside world when connected to electronic circuits.  The Pi is able to control LEDs, turning them on and off, or motors, or many other things.  It is also able to detect whether a switch has been pressed, or what the temperature is, or whether there is light.  With this CamJam EduKit you will learn to control LEDs and a buzzer, and detect when a button has been pressed.
+
+The disgram on the left shows the pin layout for all the Raspberry Pi models built for the last few years; they have 40 GPIO pins.  The original Raspberry Pi models A and B only had 26 pins and will not work for these worksheets.
+
+Some pins have different functions.  There are pins that provide power at 5 volts and 3.3 volts, ground pins (0 volts), input/output pins and some pins that interface to external circuits in more complex ways (which are not currently supported by BMC64).  You are going to use 8 of the GPIO pins and the ground pins in these worksheets.  Note that all of the pins marked as ground (GND) are equivalent.
+
+In BMC64, we access the GPIO pins through the User Port.  For these worksheets, we will assume that you are operating in C64 mode.  In this case, the user port is represented by memory location 56577.  Each memory location can hold a number from 0 to 255.  This is because the computer uses 8 \textbf{bits} to hold each value and each bit can be 0 or 1.  Table~\ref{tbl:port-pins} shows the numerical value of each bit and which GPIO pin it accesses.
+
+\begin{table}[htb]
+\caption{GPIO pins used by the user port.}\label{tbl:port-pins}
+\begin{center}
+\begin{tabular}{|l|r|r|r|r|r|r|r|r|}
+\hline
+\textbf{Bit}      &   7 &  6 &  5 &  4 &  3 &  2 &  1 &  0 \\
+\hline
+\textbf{Value}    & 128 & 64 & 32 & 16 &  8 &  4 &  2 &  1 \\
+\hline
+\textbf{GPIO Pin} &  21 & 20 & 26 & 16 &  8 & 25 & 24 &  4 \\
+\hline
+\end{tabular}
+\end{center}
+\end{table}
+
+The bits are numbered from the right (lowest valued) position, starting at bit number 0.  To specify which bits we want turned on, we add the value for those bits.  For example, if we want to access bits 1 and 0, we see that they have values 2 and 1.  Now, $2+1 = 3$ which means we would need a value of 3 to represent those two bits.
+
+Each pin in the user port can be either an input or an output.  Location 56579 holds this direction information and is known as the \textbf{data direction register} or \textbf{DDR}.  In the DDR, each bit that is 0 means the corresponding bit in the user port is an input and each bit that is 1 means the user port bit is an output.  The default value in the DDR is 0, so all of the pins default to inputs.  If the DDR had a value of 255, then all of the pins would be outputs and a value of 15 would mean the first four pins would be inputs and the last four pins would be outputs.
+
+The BASIC commands you will use to read and write these values are \textbf{PEEK} and \textbf{POKE}.  Since you will be using the user port and DDR locations a lot, it will be best to put them into variables.  Let's use \textbf{UP} and \textbf{DDR} for these purposes.  In this worksheet, you will be performing output, so you will need to be POKEing values into UP and DDR.
+
+To set all of the user port pins to inputs, you will use \textbf{POKE DDR,0} and to set them all as outputs, you use \textbf{POKE DDR,255}.  When pins are set as inputs, you can read the state of them using \textbf{PEEK(UP)} and if you want to set pins to be on, then you will use \textbf{POKE UP,X} (where X will represent which pins are on and which are off).
+
+In this way, using the user port, we will be able to access and control up to eight devices at the same time.
+
+\subsubsection*{The Breadboard}
+
+The breadboard is a way of connecting electronic components to each other without having to solder them together.  They are often used to test a circuit design before creating a Printed Circuit Board (PCB).
+
+\limage{0.7}{breadboard}
+
+The holes on the breadboard are connected in a pattern.
+
+With the breadboard in the CamJam EduKit, the top row of holes are all connected together---marked with blue dots.  And so are the second row of holes---marked with red dots.  The same goes for the two rows of holes at the bottom of the breadboard.
+
+In the middle, the columns of holes are connected together with a break in the middle.  So, for example, all the green holes marked are connected together, but they are not connected to the yellow holes, nor the purple ones.  Therefore, any wire you poke into the green holes will be connected to other wires poked into the other green holes.
+
+\subsubsection*{The LEDs}
+
+\limage{0.15}{leds}
+
+Three LEDs are supplied in the EduKit---one red, one yellow, and one green.  LED stands for Light Emitting Diode.  An LED glows when electricity is passed through it.
+
+When you pick up an LED, you will notice that one leg is longer that the other.  The longer leg (known as the `anode') is always connected to the positive supply of the power supply.  The shorter leg (known as the `cathode') is connected to the negative side of the power supply (known as `ground').
+
+LEDs will only work if power is supplied the correct way round (i.e. if the `polarity' is correct).  You will not break the LEDs if you connect them the wrong way round---they will just not light.  If you find that they do not light in your circuit, if may be because they have been connected the wrong way round.
+
+\subsubsection*{The Resistors}
+
+\limage{0.1}{resistors}
+
+Resistors are a way of limiting the amount of electricity going through a circuit; specifically, they limit the amount of `current' that is allowed to flow.  The measure of resistance is called the Ohm ($\Omega$), and the larger the resistance, the more it limits the current.  The value of a resistor is marked with coloured bands along the length of the resistor body.
+
+The EduKit is supplied with two sets of resistors.  There are three 330$\Omega$ resistors and one 4.7k$\Omega$ (or 4700$\Omega$) resistor.  In the LED circuit, you will be using the three 330$\Omega$ resistors.  You can identify the 330$\Omega$ resistors by the colour bands along the body.  The colour coding will depend on how many bands there are on the resistors supplied:
+\begin{itemize}
+\item If there are four colour bands, they will be Orange, Orange, Brown, and then Gold.
+\item If there are five bands, then the colours will be Orange, Orange, Black, Black, Brown.
+\end{itemize}
+
+You have to use resistors to connect LEDs up to the GPIO pins of the Raspberry Pi.  The Raspberry Pi can only supply a small current on the GPIO pins.  The LEDs will want to draw more and, if allowed to, they will burn out the Raspberry Pi.  Therefore, putting resistors in the circuit will ensure that only this small current will flow and the Pi will not be damaged.
+
+It does not matter which way round you connect the resistors.  Current can flow in both directions through them.
+
+\subsubsection*{The Jumper Wires}
+
+\limage{0.2}{jumpers}
+
+Jumper wires are used on breadboards to `jump' from one connection to another.  The ones you will be using in this circuit have different connectors on each end.  The end with the `pin' will go into the breadboard, and is known as the `male' end.  The end with the piece of plastic with a hole in it will go onto the Raspberry Pi's GPIO pins.  This is the `female' end.
+
+The jumper wires supplied in the EduKit will vary in colour and are unlikely to match the colours used in the diagrams.
+
+\subsection*{Building the Circuit}
+
+While you can build the circuit with the Pi turned on, it is best to turn it off at this stage.
+
+You will be using one of the `ground' (GND) pins to act like the `negative' or 0 volt end of a battery.
+
+\limage{0.5}{led-circuit}
+
+The `positive' ends of the battery will be provided by three of the other GPIO pins, one for each of the three LEDs.  You will be using the pins marked 4, 24, and 25 for the Red, Yellow, and Green LEDs respectively.
+
+When they are `taken high', which means they output 3.3 volts, the LEDs will light.
+
+Now take a look at the circuit diagram on the left.
+
+The power for each LED will be provided by the Pi, from GPIO pins 4, 24, and 25.  You can control them from BASIC, meaning you can make the GPIO pins supply either 0 volts (off) or 3.3 volts (on).
+
+There are, in fact, three separate circuits in the diagram.  Each one consists of the power supply (the Pi), an LED that lights when power is applied, and a resistor to limit the current that can flow through the circuit.
+
+Each circuit is going to share a `common ground rail'.  In other words, you will be connecting all of the circuits to the same `ground' (0 volts) pin of the Raspberry Pi.  You are going to use the second row up from the bottom of the breadboard.  Remember that the holes on the two top and two bottom rows are connected together?  So, connect one of the jumper wires from the third pin from the left on the top row of the Pi to the second row up of the breadboard, as shown in the diagram (the black wire).
+
+Next, push three LEDs legs into the breadboard, with the long leg on the right as shown in the circuit diagram.
+
+Then connect the three 330$\Omega$ resistors between the `common ground rail' and the left leg of the LEDs.  You will need to bend the legs of each of the resistors to fit, but please make sure that the wires of each leg do not touch one another.
+
+Lastly, using three jumper wires, complete the circuit by connecting pins 4, 24, and 25 to the right-hand leg of each LED.  These are shown here with orange, yellow, and blue wires.
+
+You are now ready to write some code to switch the LEDs on.
+
+\subsection*{Code}
+
+Follow the instructions in Section~\ref{s:intro} to turn on your Pi.  Type in the following code:
+\begin{basic}
+10 REM LED
+20 REM SETUP LOCATIONS
+30 UP=56577:DDR=56579
+40 REM PIN VALUES FOR LEDS
+50 R=1:Y=2:G=4:A=R+Y+G
+60 REM SET PINS 0,1,2 FOR OUTPUT
+70 POKE DDR,A
+80 REM CLEAR USER PORT (ALL PINS OFF)
+90 POKE UP,0
+100 PRINT "LEDS ON"
+110 POKE UP,A
+120 PRINT "WAIT FOR ONE SECOND"
+130 FOR I=1 TO 720:NEXT I
+140 PRINT "LEDS OFF"
+150 POKE UP,0
+\end{basic}
+
+Once you have typed all the code and checked it, save it to disk as ``2 LED''.
+
+So, what is happening in the code?  Let's go through it a section at a time:
+
+\begin{basic}
+10 REM LED
+20 REM SETUP LOCATIONS
+30 UP=56577:DDR=56579
+\end{basic}
+
+\explain{This introduces the variables UP, to refer to the user port, and DDR, to refer to the data direction register.  This is so that we don't have to type the locations multiple times.  It will also mean that we are less likely to make mistakes.  If you decide to try these worksheets using a different emulator model (eg. VIC20), then it will likely have different locations for these two.  Putting them into variables means that you will have to make fewer changes to be able to run the code.}
+
+\begin{basic}
+40 REM PIN VALUES FOR LEDS
+50 R=1:Y=2:G=4:A=R+Y+G
+\end{basic}
+
+\explain{This is telling BASIC that you are going to use pins 0, 1, and 2 (with values 1, 2, and 4) of the user port.  To reference all of them together, remember that we just add them.}
+
+\begin{basic}
+60 REM SET PINS 0,1,2 FOR OUTPUT
+70 POKE DDR,A
+80 REM CLEAR USER PORT (ALL PINS OFF)
+90 POKE UP,0
+\end{basic}
+
+\explain{We have connected the three LEDs to pins 0, 1, and 2 of the user port so we need to tell BASIC that we are going to use them for outputting information, which means you are going to be able to turn the pins `on' and `off'.  We have also set all pins on the user port to 0 (off) so that the LEDs will start in the off state.}
+
+\begin{basic}
+100 PRINT "LEDS ON"
+\end{basic}
+
+\explain{This line prints some information to the screen so you can see what the program is trying to do.}
+
+\begin{basic}
+110 POKE UP,A
+\end{basic}
+
+\explain{This turns the three LEDs `on'.  What this actually means is that these three pins are made to provide power of 3.3 volts to the three GPIO pins.}
+
+\begin{basic}
+120 PRINT "WAIT FOR ONE SECOND"
+130 FOR I=1 TO 720:NEXT I
+\end{basic}
+
+\explain{These two lines print a message to the screen, followed by an empty loop which will pause BASIC for about 1 second.}
+
+\begin{basic}
+140 PRINT "LEDS OFF"
+150 POKE UP,0
+\end{basic}
+
+\explain{This prints out a message again, then turns all three LEDs off.}
+
+\subsection*{Running the Code}
+
+You are now ready to run the code.  Run it by typing in \textbf{RUN} followed by the \textbf{ENTER} or \textbf{RETURN} key.  You should see your LEDs light for one second, then turn off again.
+
+If you find that the code does not run correctly there may be an error in the code you have typed.  You should check and re-edit the code, save again and re-run it.  Also check that you have configured the GPIO option to enable the user port in the settings.
+
+\note{Do not disassemble this circuit as it will be used in the following worksheets.}

@@ -1,0 +1,71 @@
+\begin{titlepage}
+\sffamily\bfseries
+\vspace*{20ex}
+\begin{flushright}\Huge
+CamJam EduKit 1\\
+on BMC64\\[2ex]\Large
+Mark Bush
+\end{flushright}
+\end{titlepage}
+
+\begin{titlepage}
+\setlength{\parindent}{0pt}
+
+\vspace*{\fill}
+
+Copyright \copyright{} 2020 Mark Bush.\\[2ex]
+\href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{\includegraphics[width=0.1\textwidth]{cc-4}}\\
+This work is licensed under a \href{http://creativecommons.org/licenses/by-nc-sa/4.0/}{Creative Commons Attribution-NonCommercial-ShareAlike 4.0 International License}.\\[2ex]
+
+Code and screen samples were typeset using the C64 Pro Mono font (available from \href{style64.org}{style64.org}).
+
+\end{titlepage}
+
+\begin{titlepage}
+\section*{Acknowledgements}
+
+\subsection*{CamJam EduKits}
+
+\rimage{0.15}{CamJam-4_large_sm}
+
+The CamJam EduKits have been created by the \href{https://camjam.me/}{Cambridge Raspberry Jam} people in partnership with \href{https://thepihut.com/collections/camjam-edukit}{The Pi Hut}.  They are very inexpensive kits which will help you get started on your journey of understanding how to use a Raspberry Pi to interact with the real world.  The CamJam team have created very easy to follow worksheets which allow you to experiment with the components using Python.  This booklet is based on those worksheets and allows you to perform the same activities using BMC64.
+
+\subsection*{BMC64}
+
+\href{https://github.com/randyrossi/bmc64}{BMC64} is an amazing `bare metal' implementation of classic Commodore computers on the Raspberry Pi by Randy Rossi.  This means that there is no operating system running on the machine---just the emulator.  It can switch between many models such as C64, C128, and VIC20 among others.
+
+\subsection*{Fritzing}
+
+Circuit diagrams and component images are produced using \href{https://fritzing.org/}{Fritzing}.
+\vfill
+\section*{\color{red}Warning}
+
+When connecting components to your Raspberry Pi, always make sure to follow examples carefully.  Never connect a pin providing power directly to a grounded pin---this will overload your Pi and likely burn it out.  If you use GPIO devices for BMC64 (such as a PCB to connect to an original C64 keyboard, etc), you \textbf{must} disconnect them before trying the experiments in these worksheets or you could damage them and your Pi.  Devices connected to USB ports are fine.
+
+\end{titlepage}
+
+\begin{titlepage}
+\section*{Saving Programs}
+
+If you don't already have a disk image on your SD card to save programs to, then you can easily create one.  Go into the settings menu (F12), select the `Drives' option and then `Create empty Disk'.  For now, create a `D64' disk and call it something like ``CamJam-EduKit1''.  Now select `Drive 8' and then `Attach Disk' and select the disk you just created.
+
+To save a program, use the ``SAVE'' command:
+\begin{code}
+SAVE "1 HELLO WORLD",8
+\end{code}
+
+The ``,8'' part tells the command that you are referring to the disk you selected above.  You should always make sure that it saved by verifying it:
+\begin{code}
+VERIFY "1 HELLO WORLD",8
+\end{code}
+
+If you get an error, try saving again.  If the name is already in use, then you need to use a special form of the same command to ensure the file gets overwritten (if you really mean to replace the program on disk):
+\begin{code}
+SAVE "@:1 HELLO WORLD",8
+\end{code}
+
+Without the ``@:'' part, the computer will refuse to replace a file that already exists, however it won't produce an error.  This is why you should always verify that your save was successful!
+
+\end{titlepage}
+
+\tableofcontents

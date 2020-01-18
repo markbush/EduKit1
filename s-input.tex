@@ -1,0 +1,63 @@
+\section{User Input}
+
+\project{Interact with the user and input your choice.}{In this project, you will control the red, yellow, or green LED depending on your choice.}
+
+\subsection*{Equipment Required}
+
+The circuit built in CamJam EduKit Section~\ref{s:leds}.
+
+\subsection*{Code}
+
+You are going to use the same circuit again, but this time you are going to control the LEDs with user input.  This worksheet will introduce user input as well as using variables to store information that will be used in later code.
+
+Explanations have been placed within the code.  These are called `comments' and in BASIC they are the text following `REM'.  Nothing after REM will be run, and can be left out if you want, although best practice is to use comments to remind you what you intended your code to do.
+
+Type in the following:
+\begin{basic}
+10 REM LED
+20 REM SETUP LOCATIONS
+30 UP=56577:DDR=56579
+40 REM PIN VALUES FOR LEDS
+50 R=1:Y=2:G=4:A=R+Y+G
+60 REM SET PINS 0,1,2 FOR OUTPUT
+70 POKE DDR,A
+80 REM CLEAR USER PORT (ALL PINS OFF)
+90 POKE UP,0
+100 PRINT CHR\$(147);:REM CLEARS THE SCREEN
+110 REM ASK THE USER WHICH COLOUR LED TO BLINK
+120 PRINT "WHICH LED WOULD YOU LIKE TO BLINK?"
+130 PRINT "1: RED?"
+140 PRINT "2: YELLOW?"
+150 PRINT "3: GREEN?"
+160 INPUT "WHAT IS YOUR OPTION";L
+170 REM ASK THE USER HOW MANY TIMES THEY WANT THE
+    LED TO BLINK
+180 INPUT "BLINK HOW MANY TIMES";C
+190 REM SET THE VARIABLE P TO BE THE LED PIN
+    VALUE
+200 IF L=1 THEN PRINT "YOU PICKED THE RED LED"
+    :P=R
+210 IF L=2 THEN PRINT "YOU PICKED THE YELLOW LED"
+    :P=Y
+220 IF L=3 THEN PRINT "YOU PICKED THE GREEN LED"
+    :P=G
+230 REM IF WE DON'T HAVE A VALID CHOICE, END
+240 IF P=0 THEN END
+250 REM REPEAT C TIMES
+260 FOR I=1 TO C
+270 POKE UP,P:REM TURN THE CHOSEN LED ON
+280 FOR D=1 TO 720:NEXT D:REM SLEEP 1 SECOND
+290 POKE UP,0:REM TURN THE CHOSEN LED OFF
+300 FOR D=1 TO 1440:NEXT D:REM SLEEP 2 SECONDS
+310 NEXT I
+\end{basic}
+
+Save the program as ``4 USER INPUT''.
+
+\subsection*{Running the Code}
+
+Run the code.  The screen will clear, and you will be prompted for which LED you want to turn on or off.  Enter 1, 2, or 3.  You will then be prompted for how many times you want the LED to flash.  The LED you chose will then flash the number of times you requested.
+
+\subsection*{Note}
+
+Do not disassemble the circuit as it will be used in the following worksheets.

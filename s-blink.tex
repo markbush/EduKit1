@@ -1,0 +1,78 @@
+\section{Blinking LEDs}
+
+\project{Making LEDs blink with BASIC.}{In this project, you will learn how to make LEDs blink.}
+
+This worksheet uses the same LED circuit that was built in Section~\ref{s:leds}.
+
+\subsection*{Equipment Required}
+
+The circuit built in CamJam EduKit Section~\ref{s:leds}.
+
+\subsection*{Code---Blink Twice}
+
+Type in the following code:
+\begin{basic}
+10 REM LED
+20 REM SETUP LOCATIONS
+30 UP=56577:DDR=56579
+40 REM PIN VALUES FOR LEDS
+50 R=1:Y=2:G=4:A=R+Y+G
+60 REM SET PINS 0,1,2 FOR OUTPUT
+70 POKE DDR,A
+80 REM CLEAR USER PORT (ALL PINS OFF)
+90 POKE UP,0
+100 REM TURN LEDS ON
+110 POKE UP,A
+120 FOR I=1 TO 720:NEXT I:REM PAUSE FOR 1 SECOND
+130 REM TURN LEDS OFF
+140 POKE UP,0
+150 FOR I=1 TO 720:NEXT I:REM PAUSE FOR 1 SECOND
+160 REM TURN LEDS ON
+170 POKE UP,A
+180 FOR I=1 TO 720:NEXT I:REM PAUSE FOR 1 SECOND
+190 REM TURN LEDS OFF
+200 POKE UP,0
+\end{basic}
+
+Once complete, save the file as ``3 BLINK''.
+
+\subsection*{Running the Code}
+
+Run the code.  You will see the three LEDs turn on then turn off twice, with one second in between each change.
+
+If your code does not run and an error is reported, edit the code again.
+
+\subsection*{Code---Blink Forever}
+
+Our next pieve of code will flash the lights on and off forever (or until you press ``RUN/STOP'').
+
+Type in the following code:
+\begin{basic}
+10 REM LED
+20 REM SETUP LOCATIONS
+30 UP=56577:DDR=56579
+40 REM PIN VALUES FOR LEDS
+50 R=1:Y=2:G=4:A=R+Y+G
+60 REM SET PINS 0,1,2 FOR OUTPUT
+70 POKE DDR,A
+80 REM CLEAR USER PORT (ALL PINS OFF)
+90 POKE UP,0
+100 POKE UP,A:REM TURN LEDS ON
+110 FOR I=1 TO 720:NEXT I:REM PAUSE FOR 1 SECOND
+120 POKE UP,0:REM TURN LEDS OFF
+130 FOR I=1 TO 720:NEXT I:REM PAUSE FOR 1 SECOND
+140 GOTO 100:REM LOOP FOREVER
+\end{basic}
+
+Save the program as ``3 BLINK FOREVER''.
+
+\subsection*{Running the Code}
+
+Run the code.  You will see the three LEDs turn on and off forever, or until you press ``RUN/STOP''.
+
+If the LEDs are still on when you stop the program, just execute the following command:
+\begin{basic}
+POKE UP,0
+\end{basic}
+
+If there is an error in the code, change the code and re-save it.  Re-run to check that you have corrected the error.
