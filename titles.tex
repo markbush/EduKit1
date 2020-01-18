@@ -40,7 +40,10 @@ Circuit diagrams and component images are produced using \href{https://fritzing.
 \vfill
 \section*{\color{red}Warning}
 
-When connecting components to your Raspberry Pi, always make sure to follow examples carefully.  Never connect a pin providing power directly to a grounded pin---this will overload your Pi and likely burn it out.  If you use GPIO devices for BMC64 (such as a PCB to connect to an original C64 keyboard, etc), you \textbf{must} disconnect them before trying the experiments in these worksheets or you could damage them and your Pi.  Devices connected to USB ports are fine.
+When connecting components to your Raspberry Pi, always make sure to follow examples carefully.  Never connect a pin providing power directly to a grounded pin---this will overload your Pi and likely burn it out.  If you use GPIO devices for BMC64 (such as a PCB to connect to an original C64 keyboard, etc), you \textbf{must} disconnect them before trying the experiments in these worksheets or you could damage them and your Pi.  Devices connected to USB ports are fine.  Because of this possible conflict, you must the following to your `cmdline.txt' file to be able to select the userport GPIO config option:
+\begin{verbatim}
+gpio_outputs_enabled=true
+\end{verbatim}
 
 \end{titlepage}
 
