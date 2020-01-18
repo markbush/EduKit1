@@ -33,11 +33,11 @@ Firstly, you will need to prepare an SD card with BMC64 by following [these inst
 
 To enable the user port, you will need to add:
 
-	gpio_outputs_enabled=true
+	enable_gpio_outputs=true
 
 to your `cmdline.txt` file.
 
-Your Raspberry Pi will boot into C64 mode by default, which is what the worksheets assume.  You need to specify that you are using the Raspberry Pi GPIO pins for the user port by going into the settings menu (F12), selecting `Prefs` and then `GPIO Option` and use the right/left cursor keys until `#4 (Userport+Joy)` is selected.
+Your Raspberry Pi will boot into C64 mode by default, which is what the worksheets assume.  You need to specify that you are using the Raspberry Pi GPIO pins for the user port by going into the settings menu (F12), selecting `GPIO` and then `Config` and use the right/left cursor keys until `#4 (Userport+Joy)` is selected.
 
 ## Saving Programs
 
