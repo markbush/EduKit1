@@ -3,7 +3,6 @@
 \graphicspath{{images/}}
 \usepackage{wrapfig}
 \usepackage{fontspec}
-\setmonofont{C64 Pro Mono}
 \newcommand\winkey{{\fontspec{Illustrate IT}c}}
 \newcommand\cmdkey{{\fontspec{Lucida Grande}\char"2318}}
 \usepackage{color}
@@ -32,7 +31,7 @@
       \@tempswatrue
       \ifhmode\@@par\penalty\interlinepenalty\fi
     \fi\vspace*{-2pt}}%
-\ttfamily\obeylines\frenchspacing\@vobeyspaces%
+\fontspec{C64 Pro Mono}\obeylines\frenchspacing\@vobeyspaces%
 %\small%
 }{}
 \newenvironment{basic}{%
@@ -46,7 +45,7 @@
       \ifhmode\@@par\penalty\interlinepenalty\fi
     \fi%\vspace*{-2pt}
   }%
-\ttfamily\obeylines\frenchspacing\@vobeyspaces%
+\fontspec{C64 Pro Mono}\obeylines\frenchspacing\@vobeyspaces%
 \footnotesize%
 }{}
 \makeatother
